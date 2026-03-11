@@ -1,0 +1,6 @@
+[submodule "dependencies/MeowUtilities"]
+	path = dependencies/MeowUtilities
+	url = https://github.com/ThatSocialistKitty/MeowUtilities.git
+[submodule "dependencies/MeowWindow"]
+	path = dependencies/MeowWindow
+	url = https://github.com/ThatSocialistKitty/MeowWindow.git

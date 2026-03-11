@@ -1,0 +1,20 @@
+.{
+    .name = .MeowbloxStudio,
+    .version = "0.1.0",
+    .minimum_zig_version = "0.15.2",
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "source",
+        "dependencies"
+    },
+    .fingerprint = 0xfcb70aacaa2370ee,
+    .dependencies = .{
+        .MeowWindow = .{
+            .path = "dependencies/MeowWindow"
+        },
+        .MeowUtilities = .{
+            .path = "dependencies/MeowUtilities"
+        }
+    }
+}
