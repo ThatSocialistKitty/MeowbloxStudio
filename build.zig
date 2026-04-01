@@ -25,7 +25,7 @@ pub fn build(b: *std.Build) void {
             dependency.module("main")
         );
         
-        // executable.linkLibrary(dependency.artifact("main"));
+        // executable.linkLibrary(dependency.artifact("dependencies"));
         // executable.addIncludePath(b.path("dependencies/engine/dependencies/Vulkan-Headers/include"));
         
         const compileShaders: type = @import("dependencies/MeowWindow/developerDependencies/compileShaders.zig");
