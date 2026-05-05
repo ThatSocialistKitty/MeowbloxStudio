@@ -10,11 +10,14 @@
     },
     .fingerprint = 0xfcb70aacaa2370ee,
     .dependencies = .{
+        .MeowUtilities = .{
+            .path = "dependencies/MeowUtilities"
+        },
         .MeowWindow = .{
             .path = "dependencies/MeowWindow"
         },
-        .MeowUtilities = .{
-            .path = "dependencies/MeowUtilities"
+        .MeowbloxClient = .{
+            .path = "dependencies/MeowbloxClient"
         }
     }
 }

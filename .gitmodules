@@ -4,3 +4,6 @@
 [submodule "dependencies/MeowWindow"]
 	path = dependencies/MeowWindow
 	url = https://github.com/ThatSocialistKitty/MeowWindow.git
+[submodule "dependencies/MeowbloxClient"]
+	path = dependencies/MeowbloxClient
+	url = https://github.com/ThatSocialistKitty/MeowbloxClient

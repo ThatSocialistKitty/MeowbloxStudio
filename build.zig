@@ -10,9 +10,23 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{
             .root_source_file = b.path("source/main.zig"),
             .target = target,
-            .optimize = optimize
-        })
+            .optimize = optimize,
+            .strip = optimize != .Debug
+        }),
+        .use_llvm = true
     });
+    
+    {
+        const dependency: *std.Build.Dependency = b.dependency("MeowUtilities",.{
+            .target = target,
+            .optimize = optimize
+        });
+        
+        executable.root_module.addImport(
+            "MeowUtilities",
+            dependency.module("main")
+        );
+    }
     
     {
         const dependency: *std.Build.Dependency = b.dependency("MeowWindow",.{
@@ -27,19 +41,19 @@ pub fn build(b: *std.Build) void {
         
         // executable.linkLibrary(dependency.artifact("dependencies"));
         // executable.addIncludePath(b.path("dependencies/engine/dependencies/Vulkan-Headers/include"));
-        
-        const compileShaders: type = @import("dependencies/MeowWindow/developerDependencies/compileShaders.zig");
-        compileShaders.main(b,b.path("source/shaders"));
     }
     
     {
-        const dependency: *std.Build.Dependency = b.dependency("MeowUtilities",.{
+        const dependency: *std.Build.Dependency = b.dependency("MeowbloxClient",.{
             .target = target,
             .optimize = optimize
         });
         
+        const buildRuntimeDirectories: type = @import("dependencies/MeowbloxClient/developerDependencies/buildRuntimeDirectories.zig");
+        buildRuntimeDirectories.main(b,dependency.path(""));
+        
         executable.root_module.addImport(
-            "MeowUtilities",
+            "MeowbloxClient",
             dependency.module("main")
         );
     }
