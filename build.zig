@@ -1,14 +1,14 @@
 const std: type = @import("std");
 const builtin: type = @import("builtin");
 
-pub fn build(b: *std.Build) void {
-    const target: std.Build.ResolvedTarget = b.standardTargetOptions(.{});
-    const optimize: std.builtin.OptimizeMode = b.standardOptimizeOption(.{});
+pub fn build(builder: *std.Build) void {
+    const target: std.Build.ResolvedTarget = builder.standardTargetOptions(.{});
+    const optimize: std.builtin.OptimizeMode = builder.standardOptimizeOption(.{});
     
-    const executable: *std.Build.Step.Compile = b.addExecutable(.{
+    const executable: *std.Build.Step.Compile = builder.addExecutable(.{
         .name = "MeowbloxStudio",
-        .root_module = b.createModule(.{
-            .root_source_file = b.path("source/main.zig"),
+        .root_module = builder.createModule(.{
+            .root_source_file = builder.path("source/main.zig"),
             .target = target,
             .optimize = optimize,
             .strip = optimize != .Debug
@@ -16,67 +16,71 @@ pub fn build(b: *std.Build) void {
         .use_llvm = true
     });
     
-    {
-        const dependency: *std.Build.Dependency = b.dependency("MeowUtilities",.{
+    // MeowUtilities
+    
+    
+        const meowUtilities: *std.Build.Dependency = builder.dependency("MeowUtilities",.{
             .target = target,
             .optimize = optimize
         });
         
         executable.root_module.addImport(
             "MeowUtilities",
-            dependency.module("main")
+            meowUtilities.module("main")
         );
-    }
     
-    {
-        const dependency: *std.Build.Dependency = b.dependency("MeowWindow",.{
+    
+    // MeowWindow
+    
+    
+        const meowWindow: *std.Build.Dependency = builder.dependency("MeowWindow",.{
             .target = target,
             .optimize = optimize
         });
         
         executable.root_module.addImport(
             "MeowWindow",
-            dependency.module("main")
+            meowWindow.module("main")
         );
         
         // executable.linkLibrary(dependency.artifact("dependencies"));
-        // executable.addIncludePath(b.path("dependencies/engine/dependencies/Vulkan-Headers/include"));
-    }
+        // executable.addIncludePath(builder.path("dependencies/engine/dependencies/Vulkan-Headers/include"));
     
-    {
-        const dependency: *std.Build.Dependency = b.dependency("MeowbloxClient",.{
+    
+    // MeowbloxClient
+    
+    
+        const meowbloxClient: *std.Build.Dependency = builder.dependency("MeowbloxClient",.{
             .target = target,
-            .optimize = optimize
+            .optimize = optimize,
+            .builder = @intFromPtr(builder)
         });
-        
-        const buildRuntimeDirectories: type = @import("dependencies/MeowbloxClient/developerDependencies/buildRuntimeDirectories.zig");
-        buildRuntimeDirectories.main(b,dependency.path(""));
         
         executable.root_module.addImport(
             "MeowbloxClient",
-            dependency.module("main")
+            meowbloxClient.module("main")
         );
-    }
     
-    b.installArtifact(executable);
     
-    const runStep: *std.Build.Step = b.step("run","Run ^w^");
+    builder.installArtifact(executable);
     
-    const runCommand: *std.Build.Step.Run = b.addRunArtifact(executable);
-    runCommand.step.dependOn(b.getInstallStep());
+    const runStep: *std.Build.Step = builder.step("run","Run ^w^");
+    
+    const runCommand: *std.Build.Step.Run = builder.addRunArtifact(executable);
+    runCommand.step.dependOn(builder.default_step);
     
     runStep.dependOn(&runCommand.step);
     
-    if (b.args != null) {
-        runCommand.addArgs(b.args.?);
+    if (builder.args != null) {
+        runCommand.addArgs(builder.args.?);
     }
     
-    const executableTests: *std.Build.Step.Compile = b.addTest(.{
+    const executableTests: *std.Build.Step.Compile = builder.addTest(.{
         .root_module = executable.root_module
     });
     
-    const runExecutableTests: *std.Build.Step.Run = b.addRunArtifact(executableTests);
+    const runExecutableTests: *std.Build.Step.Run = builder.addRunArtifact(executableTests);
     
-    const testStep = b.step("test","Test >:3");
+    const testStep = builder.step("test","Test >:3");
     testStep.dependOn(&runExecutableTests.step);
 }
